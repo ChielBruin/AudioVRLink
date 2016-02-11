@@ -23,16 +23,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Button btn_forward;
     private Button btn_backward;
 
+    private String text = "Not connected";
     private DataClient client;
-    // private float[] rotationMatrix;
     private int SENSOR_DELAY = 50000;
-    private String IP = null;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        client = new DataClient();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         compassData = (TextView) findViewById(R.id.CompassData);
@@ -41,13 +39,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
-        askIP();
+        askIP("Enter your 4-digit connection code:");
     }
 
-    private void askIP() {
+    private void askIP(String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enter IP");
-        builder.setMessage("current IP:" + client.getIP());
+        builder.setTitle("Create connection");
+        builder.setMessage(msg);
 
 // Set up the input
         final EditText input = new EditText(this);
@@ -58,8 +56,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                IP = input.getText().toString();
-                client.setIP(IP);
+                try{
+                    String IP = DataClient.parseConnectCode(input.getText().toString());
+                    text = "Connecting to: "+ IP;
+                    client = new DataClient(IP);
+                } catch (IllegalArgumentException e) {
+                    askIP(e.getMessage());
+                }
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -88,12 +91,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
             float[] vals = event.values;
-            float[] res = {(float)Math.cos(Math.toRadians(180f * vals[2])), 0f, (float)Math.sin(Math.toRadians(180f * vals[2]))};
-            if(client.isReady()){
-                client.send(res,getForward());
+            float[] res = getForward(vals);
+            if(client != null && client.isReady()){
+                client.send(res,getMove());
+                compassData.setText(res[0] + "\n" + res[1]  + "\n" + res[2]  + "\n" + getMove());
+            } else {
+                //compassData.setText("Not connected...");
+                compassData.setText(text);
             }
-            compassData.setText(res[0] + "\n" + res[1]  + "\n" + res[2]  + "\n" + getForward());
+
         }
+    }
+
+    private float[] getForward(float[] vals) {
+        return new float[] {(float)Math.cos(Math.toRadians(180f * vals[2])), 0f, (float)Math.sin(Math.toRadians(180f * vals[2]))};
     }
 
     @Override
@@ -101,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
-    public float getForward() {
+    public float getMove() {
         float r = 0f;
         if(btn_forward.isPressed()) r += 1f;
         if(btn_backward.isPressed()) r -= 1f;
