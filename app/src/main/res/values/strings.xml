@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">AudioVRLink</string>
+    <string name="connectingTo">"Connecting to: %s"</string>
+    <string name="ccWrongChecksum">This code does not connect to a device on this network!</string>
+    <string name="connectedTo">"Connected to %s"</string>
+    <string name="ccWrongSize">The given code is not 4 characters long!</string>
+    <string name="wrongVectorSize">Size of the vector is not %d</string>
+    <string name="IPsyntaxError">IP address not valid! Should be of the form of \'a.b.c.d\'</string>
 </resources>
