@@ -19,11 +19,11 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private SensorManager sensorManager;
-    private TextView compassData;
+    private TextView connectionStatus;
+    private TextView dataStream;
     private Button btn_forward;
     private Button btn_backward;
 
-    private String text = "Not connected";
     private DataClient client;
     private int SENSOR_DELAY = 50000;
 
@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        compassData = (TextView) findViewById(R.id.CompassData);
+        dataStream = (TextView) findViewById(R.id.dataStream);
+        connectionStatus = (TextView) findViewById(R.id.connectionStatus);
         btn_forward = (Button) findViewById(R.id.forward);
         btn_backward = (Button) findViewById(R.id.backward);
 
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onClick(DialogInterface dialog, int which) {
                 try{
                     String IP = DataClient.parseConnectCode(input.getText().toString());
-                    text = "Connecting to: "+ IP;
+                    connectionStatus.setText("Connecting to: "+ IP);
                     client = new DataClient(IP);
                 } catch (IllegalArgumentException e) {
                     askIP(e.getMessage());
@@ -93,11 +94,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             float[] vals = event.values;
             float[] res = getForward(vals);
             if(client != null && client.isReady()){
+                connectionStatus.setText("Connected to " + client.getServerIP());
                 client.send(res,getMove());
-                compassData.setText(res[0] + "\n" + res[1]  + "\n" + res[2]  + "\n" + getMove());
+                dataStream.setText(res[0] + "\n" + res[1]  + "\n" + res[2]  + "\n" + getMove());
             } else {
-                //compassData.setText("Not connected...");
-                compassData.setText(text);
+                dataStream.setText("");
             }
 
         }

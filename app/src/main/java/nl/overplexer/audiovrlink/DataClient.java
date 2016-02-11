@@ -121,6 +121,10 @@ public class DataClient {
         return true;
     }
 
+    public String getServerIP() {
+        return SERVER_IP;
+    }
+
     class ClientThread implements Runnable {
         @Override
         public void run() {
