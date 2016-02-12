@@ -6,4 +6,12 @@
     <string name="ccWrongSize">The given code is not 4 characters long!</string>
     <string name="wrongVectorSize">Size of the vector is not %d</string>
     <string name="IPsyntaxError">IP address not valid! Should be of the form of \'a.b.c.d\'</string>
+    <string name="ccEnter">Enter your 4-digit connection code:</string>
+    <string name="createConnection">Create connection</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="reconnect">Reconnect</string>
+    <string name="notConnected">Not connected...</string>
+    <string name="backward">Backward</string>
+    <string name="forward">Forward</string>
 </resources>

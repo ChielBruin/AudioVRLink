@@ -150,6 +150,7 @@ public class DataClient {
      * @return true is the socket closed correctly, false otherwise.
      */
     public boolean close() {
+        if(socket == null) return true;
         try {
             socket.close();
         } catch (IOException e) {

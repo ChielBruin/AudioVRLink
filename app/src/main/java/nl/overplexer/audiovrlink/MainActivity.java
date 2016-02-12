@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
-        askIP("Enter your 4-digit connection code:");
+        askIP(getString(R.string.ccEnter));
     }
 
     /**
@@ -54,11 +55,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
      */
     private void askIP(String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Create connection");
+        builder.setTitle(R.string.createConnection);
         builder.setMessage(msg);
         final EditText input = new EditText(this);
         builder.setView(input);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try{
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }
@@ -140,6 +141,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return r;
     }
 
+    /**
+     * Close the current connection and connect to a new one.
+     * @param view the view that called this method.
+     */
+    public void reconnect(View view) {
+        connectionStatus.setText(getString(R.string.notConnected));
+        if(client != null) client.close();
+        askIP(getString(R.string.ccEnter));
+    }
+
+    /**
+     * Get the instance of this singleton.
+     * @return the instance of MainActivity
+     */
     public static MainActivity getInstance() {
         return instance;
     }
