@@ -125,9 +125,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
      */
     private float[] getForward(float[] rotation) {
         float[] result = new float[3];
-        result[0] = (float)Math.cos(Math.toRadians(180f * (rotation[2] - initRotation[2])));
+        result[0] = (float) -Math.sin(Math.toRadians(180f * (rotation[2] - initRotation[2])));
         result[1] = 0;
-        result[2] = (float)Math.sin(Math.toRadians(180f * (rotation[2] - initRotation[2])));
+        result[2] = (float) Math.cos(Math.toRadians(180f * (rotation[2] - initRotation[2])));
         return result;
     }
 
