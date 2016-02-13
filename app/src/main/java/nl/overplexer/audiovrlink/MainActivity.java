@@ -29,8 +29,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Button btn_backward;
 
     private DataClient client;
-
-
+    private float[] initRotation = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
             float[] vals = event.values;
+            if(initRotation == null) initRotation = event.values.clone();
             float[] res = getForward(vals);
             if(client != null && client.isReady()){
                 connectionStatus.setText(getString(R.string.connectedTo, client.getServerIP()));
@@ -119,12 +119,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     /**
-     * Calculates the forward vector from a given rotation vector.
+     * Calculates the forward vector from a given rotation vector and the initial rotation vector.
      * @param rotation The rotation vector.
      * @return the forward direction vector.
      */
     private float[] getForward(float[] rotation) {
-        return new float[] {(float)Math.cos(Math.toRadians(180f * rotation[2])), 0f, (float)Math.sin(Math.toRadians(180f * rotation[2]))};
+        float[] result = new float[3];
+        result[0] = (float)Math.cos(Math.toRadians(180f * (rotation[2] - initRotation[2])));
+        result[1] = 0;
+        result[2] = (float)Math.sin(Math.toRadians(180f * (rotation[2] - initRotation[2])));
+        return result;
     }
 
     @Override
