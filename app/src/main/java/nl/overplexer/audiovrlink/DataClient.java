@@ -99,7 +99,7 @@ public class DataClient {
                             for (; a.hasMoreElements();)
                             {
                                 InetAddress addr = a.nextElement();
-                                if(!addr.getHostAddress().startsWith("127.") && !addr.getHostAddress().contains("::")){
+                                if(!addr.getHostAddress().startsWith("127.") && !addr.getHostAddress().contains(":")){
                                     LOCAL_IP = addr.getHostAddress();
                                     return; // May cause bugs later
                                 }
