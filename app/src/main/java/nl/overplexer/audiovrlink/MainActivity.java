@@ -142,10 +142,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     /**
-     * Close the current connection and connect to a new one.
+     * Close the current connection and connect to the same ip again.
      * @param view the view that called this method.
      */
     public void reconnect(View view) {
+        if(client != null) {
+            client.close();
+            String ip = client.getServerIP();
+            client = new DataClient(ip);
+        }
+    }
+
+    /**
+     * Close the current connection and connect to a new one.
+     * @param view the view that called this method.
+     */
+    public void newConnect(View view) {
         connectionStatus.setText(getString(R.string.notConnected));
         if(client != null) client.close();
         askIP(getString(R.string.ccEnter));
