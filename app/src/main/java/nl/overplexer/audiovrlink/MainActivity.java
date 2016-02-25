@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 /**
@@ -27,9 +28,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView dataStream;
     private Button btn_forward;
     private Button btn_backward;
+    private RadioGroup orientationSelector;
 
     private DataClient client;
-    private float[] initRotation = null;
+    private SensorListener sensorListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +42,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         connectionStatus = (TextView) findViewById(R.id.connectionStatus);
         btn_forward = (Button) findViewById(R.id.forward);
         btn_backward = (Button) findViewById(R.id.backward);
+        orientationSelector = (RadioGroup) findViewById(R.id.orientationSelector);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
+        sensorListener = new SensorListener(sensorManager, SENSOR_DELAY);
         askIP(getString(R.string.ccEnter));
     }
 
@@ -95,18 +98,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR), SENSOR_DELAY);
 
     }
-    @Override
-    protected void onPause() {
-        super.onPause();
-        sensorManager.unregisterListener(this); //prevent updates when screen is off
-    }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
-            float[] vals = event.values;
-            if(initRotation == null) initRotation = event.values.clone();
-            float[] res = getForward(vals);
+            float [] res = sensorListener.getForward(getOrientation());
             if(client != null && client.isReady()){
                 connectionStatus.setText(getString(R.string.connectedTo, client.getServerIP()));
                 client.send(res,getMove());
@@ -114,21 +110,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             } else {
                 dataStream.setText("");
             }
-
         }
-    }
-
-    /**
-     * Calculates the forward vector from a given rotation vector and the initial rotation vector.
-     * @param rotation The rotation vector.
-     * @return the forward direction vector.
-     */
-    private float[] getForward(float[] rotation) {
-        float[] result = new float[3];
-        result[0] = (float) -Math.sin(Math.toRadians(180f * (rotation[2] - initRotation[2])));
-        result[1] = 0;
-        result[2] = (float) Math.cos(Math.toRadians(180f * (rotation[2] - initRotation[2])));
-        return result;
     }
 
     @Override
@@ -173,5 +155,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
      */
     public static MainActivity getInstance() {
         return instance;
+    }
+
+    /**
+     * Get the orientation from the radio buttons.
+     * @return the corresponding value of the Orientation enum
+     */
+    public Orientation getOrientation() {
+        int id =  orientationSelector.getCheckedRadioButtonId();
+        int x = orientationSelector.indexOfChild(findViewById(id));
+        return Orientation.values()[x];
     }
 }
