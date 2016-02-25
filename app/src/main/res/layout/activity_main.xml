@@ -61,5 +61,36 @@
         android:layout_below="@id/reconnect"
         android:onClick="newConnect"/>
 
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/orientationSelector"
+        android:layout_above="@+id/forward"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/landscape"
+            android:id="@+id/Landscape"
+            android:layout_gravity="center_horizontal" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/portrait"
+            android:id="@+id/Portrait"
+            android:layout_gravity="right"
+            android:checked="true" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/other"
+            android:id="@+id/Other"
+            android:layout_gravity="center_horizontal" />
+    </RadioGroup>
+
 
 </RelativeLayout>

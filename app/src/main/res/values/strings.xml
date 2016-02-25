@@ -15,4 +15,7 @@
     <string name="backward">Backward</string>
     <string name="forward">Forward</string>
     <string name="newConnection">New</string>
+    <string name="landscape">Landscape</string>
+    <string name="portrait">Portrait</string>
+    <string name="other">Other</string>
 </resources>
