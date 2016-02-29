@@ -45,17 +45,17 @@ public class SensorListener implements SensorEventListener {
         switch (deviceOrientation) {
             case PORTRAIT: {
                 result[0] = rotation[0];
-                result[1] = rotation[6];
+                result[1] = -rotation[8];
                 result[2] = rotation[3];
             } break;
             case LANDSCAPE: {
                 result[0] = rotation[1];
-                result[1] = rotation[7];
+                result[1] = -rotation[8];
                 result[2] = rotation[4];
             } break;
             case OTHER: {
                 result[0] = rotation[2];
-                result[1] = rotation[8];
+                result[1] = -rotation[8];
                 result[2] = rotation[5];
             } break;
         }
